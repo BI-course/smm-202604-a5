@@ -3,182 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Serving ML Models</title>
+<title>Model Demos</title>
 <style>
-  :root {
-    --bg: #f3f4f6;
-    --card: #ffffff;
-    --text: #1f2937;
-    --muted: #6b7280;
-    --border: #e5e7eb;
-    --accent: #4338ca;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-  }
-  header {
-    background: linear-gradient(135deg, #4338ca, #7c3aed);
-    color: #fff;
-    padding: 48px 16px 40px;
-    text-align: center;
-  }
-  header h1 { margin: 0 0 8px; font-size: 26px; }
-  header p { margin: 0; opacity: 0.9; font-size: 15px; }
-  main { max-width: 920px; margin: -24px auto 64px; padding: 0 16px; }
-
-  .info-card {
-    background: var(--card);
-    border-radius: 16px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
-    padding: 24px 28px;
-    margin-bottom: 24px;
-  }
-  .info-grid {
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    row-gap: 10px;
-    column-gap: 16px;
-    font-size: 14px;
-  }
-  .info-grid dt { font-weight: 600; color: var(--muted); }
-  .info-grid dd { margin: 0; }
-  .info-card a { color: var(--accent); }
-
-  h2 { font-size: 18px; margin: 32px 0 16px; }
-
-  .flow-steps { padding-left: 20px; font-size: 14px; line-height: 1.7; }
-  .flow-steps li { margin-bottom: 10px; }
-  .flow-arrow {
-    background: var(--card);
-    border-radius: 12px;
-    padding: 12px 16px;
-    font-size: 14px;
-    display: inline-block;
-    margin-top: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  }
-
-  .endpoint-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-  }
-  .endpoint-card {
-    background: var(--card);
-    border-radius: 16px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
-    padding: 22px;
-    text-decoration: none;
-    color: var(--text);
-    display: block;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    border-top: 4px solid var(--dot);
-  }
-  .endpoint-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08), 0 12px 28px rgba(0,0,0,0.10);
-  }
-  .endpoint-card .tag {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 999px;
-    margin-bottom: 10px;
-  }
-  .endpoint-card h3 { margin: 0 0 6px; font-size: 16px; }
-  .endpoint-card p { margin: 0; font-size: 13px; color: var(--muted); }
-  .endpoint-card code { font-size: 11px; color: var(--muted); }
-
-  .c1 { --dot: #4f46e5; } .c1 .tag { background: #eef2ff; color: #4338ca; }
-  .c2 { --dot: #0891b2; } .c2 .tag { background: #ecfeff; color: #0e7490; }
-  .c3 { --dot: #7c3aed; } .c3 .tag { background: #f5f3ff; color: #6d28d9; }
-  .c4 { --dot: #ea580c; } .c4 .tag { background: #fff7ed; color: #c2410c; }
-
-  footer { text-align: center; font-size: 12px; color: var(--muted); padding: 24px 16px 48px; }
+  body { font-family: Arial, sans-serif; max-width: 760px; margin: 24px auto;
+         padding: 0 16px; color: #1f2933; }
+  h1 { font-size: 24px; }
+  .tabs button { padding: 8px 14px; border: 1px solid #9aa5b1; background: #f5f7fa;
+                 cursor: pointer; border-radius: 6px 6px 0 0; }
+  .tabs button.active { background: #1f6feb; color: #fff; border-color: #1f6feb; }
+  form { border: 1px solid #9aa5b1; padding: 16px; border-radius: 0 6px 6px 6px; }
+  label { display: block; margin-top: 10px; font-size: 14px; font-weight: bold; }
+  input, select { width: 100%; padding: 7px; margin-top: 4px; box-sizing: border-box; }
+  .hint { font-weight: normal; color: #616e7c; }
+  button.go { margin-top: 16px; padding: 10px 18px; background: #1f6feb; color: #fff;
+              border: 0; border-radius: 6px; cursor: pointer; }
+  #result { margin-top: 16px; padding: 12px; border-radius: 6px; white-space: pre-wrap; display: none; }
+  #result.ok { background: #e3f9e5; border: 1px solid #3f9142; display: block; }
+  #result.err { background: #ffe3e3; border: 1px solid #c53030; display: block; }
 </style>
 </head>
 <body>
+<h1>Model Demos</h1>
+<p>Pick a model, fill in the form and press Predict.</p>
+<div class="tabs" id="tabs"></div>
+<form id="form" novalidate></form>
+<div id="result"></div>
 
-<header>
-  <h1>Serving Machine Learning Models through a RESTish API using Flask in Python</h1>
-  <p>BBT 4206 &middot; Business Intelligence II &middot; Week 4-6 of 13</p>
-</header>
+<script>
+// Direct-to-Flask testing (file:// or Live Server) needs the full address.
+// Through Nginx (https://localhost/) a relative path works and needs no CORS.
+const API_BASE = (location.protocol === "file:" || ["5500", "63342"].includes(location.port))
+  ? "http://127.0.0.1:5000" : "";
+// To use the Render API instead, set: const API_BASE = "https://YOUR-SERVICE.onrender.com";
 
-<main>
-  <div class="info-card">
-    <dl class="info-grid">
-      <dt>Course Codes</dt><dd>BBT 4206</dd>
-      <dt>Course Name</dt><dd>BBT 4206: Business Intelligence II (Week 4-6 of 13)</dd>
-      <dt>Semester</dt><dd>September to December 2026</dd>
-      <dt>Lecturer</dt><dd>Allan Omondi</dd>
-      <dt>Contact</dt><dd>aomondi@strathmore.edu</dd>
-      <dt>Note</dt>
-      <dd>
-        The lecture contains both theory and practice. This forms part of the practice.
-        It is intended for educational purposes only.<br>
-        Recommended citation:
-        <a href="https://raw.githubusercontent.com/course-files/ServingMLModels/refs/heads/main/RecommendedCitation.bib" target="_blank">BibTeX</a>
-      </dd>
-    </dl>
-  </div>
+const num = (name, label, value, optional = false) => ({ name, label, type: "number", value, optional });
+const sel = (name, label, options) => ({ name, label, type: "select", options });
 
-  <div class="info-card">
-    <h2 style="margin-top:0;">Request Flow</h2>
-    <img src="RequestFlow.jpg" alt="Request Flow Diagram" style="display:block; background:#fff; padding:16px; border:1px solid #ccc; max-width:60%; margin-bottom:24px;">
-    <ol class="flow-steps">
-      <li><strong>Client</strong> (Postman / cURL / one of the four frontends below)
-        <div style="color:var(--muted);">Sends a request to <code>https://yourdomain/api/...</code></div>
-      </li>
-      <li><strong>NGINX</strong> (reverse proxy)
-        <div style="color:var(--muted);">Terminates HTTPS, serves static files, forwards <code>/api/...</code> to Gunicorn.</div>
-      </li>
-      <li><strong>Gunicorn</strong> (ASGI server)
-        <div style="color:var(--muted);">Manages worker processes and translates HTTP into Python ASGI calls.</div>
-      </li>
-      <li><strong>Flask</strong> (this app, <code>api.py</code>)
-        <div style="color:var(--muted);">Routes the request to the matching <code>@app.route</code> and returns a response.</div>
-      </li>
-    </ol>
-    <span class="flow-arrow">Response returns: Flask &rarr; Gunicorn &rarr; NGINX &rarr; Client</span>
-  </div>
+const MODELS = {
+  rent: {
+    title: "Monthly Rent Regressor",
+    url: "/api/v1/models/monthly-rent-regressor/predictions",
+    fields: [
+      num("property_age_years", "Property age (years)", 5),
+      num("num_bedrooms", "Number of bedrooms", 3),
+      num("distance_to_cbd_km", "Distance to CBD (km)", 8),
+      num("garage_size_sqm", "Garage size (sqm)", "", true),
+      num("amenities_score", "Amenities score", 70),
+      num("nearby_schools_count", "Nearby schools", 3),
+      sel("property_type", "Property type", ["Apartment", "Bungalow", "Maisonette", "Studio", "Townhouse"]),
+      sel("neighborhood", "Neighborhood",
+          ["Karen", "Kilimani", "Ngong Road", "Ruaka", "South B", "Westlands"]),
+      sel("furnishing_status", "Furnishing status", ["Unfurnished", "Semi-Furnished", "Fully Furnished"]),
+    ],
+    show: d => "Predicted monthly rent: KES " + d.predicted_monthly_rent_kes.toLocaleString(),
+  },
+  attrition: {
+    title: "Employee Attrition Classifier",
+    url: "/api/v1/models/employee-attrition-classifier/predictions",
+    fields: [
+      sel("department", "Department", ["Engineering", "Finance", "HR", "Operations", "Sales"]),
+      sel("job_role_level", "Job role level", ["Junior", "Mid", "Senior", "Lead"]),
+      sel("education_level", "Education level", ["Diploma", "Bachelor's", "Master's", "PhD"]),
+      sel("performance_rating", "Performance rating", ["Low", "Average", "High", "Outstanding"]),
+      num("years_at_company", "Years at company", 3),
+      num("years_since_last_promotion", "Years since last promotion", 2),
+      num("monthly_salary_kes", "Monthly salary (KES)", 85000),
+      num("overtime_hours_per_month", "Overtime hours per month", 20),
+      num("job_satisfaction_score", "Job satisfaction score", 3),
+      num("work_life_balance_score", "Work-life balance score", 2),
+      num("distance_from_home_km", "Distance from home (km)", 12),
+      num("num_companies_worked_previously", "Companies worked at before", 2),
+      num("remote_work_days_per_week", "Remote work days per week", 1),
+      num("bonus_amount_kes", "Bonus amount (KES)", "", true),
+    ],
+    show: d => "Predicted attrition: " + d.predicted_attrition + "\n" +
+      Object.entries(d.class_probabilities)
+        .map(([k, v]) => k + ": " + (v * 100).toFixed(1) + "%").join("\n"),
+  },
+  segment: {
+    title: "Store Segmenter",
+    url: "/api/v1/models/store-segmenter/predictions",
+    fields: [
+      num("monthly_revenue_kes", "Monthly revenue (KES)", 1200000),
+      num("daily_foot_traffic", "Daily foot traffic", 450),
+      num("staff_count", "Staff count", 12),
+      num("store_size_sqm", "Store size (sqm)", 180),
+      num("avg_basket_size_kes", "Average basket size (KES)", 1500),
+    ],
+    show: d => "Assigned segment: Cluster " + d.assigned_cluster,
+  },
+  tracks: {
+    title: "Track Recommender",
+    url: "/api/v1/models/track-recommender/predictions",
+    fields: [
+      { name: "cart", label: "Cart (comma-separated track IDs)", type: "text", value: "M10, M09" },
+      num("top_n", "Top N recommendations", 3),
+    ],
+    show: d => d.recommendations.length === 0
+      ? "No recommendations for this cart. Try track IDs such as M10, M09."
+      : d.recommendations.map(r => r.item_name + " (" + r.track_id + ", " + r.category +
+          ") - confidence " + (r.confidence * 100).toFixed(1) + "%, lift " + r.lift).join("\n"),
+  },
+};
 
-  <h2>API Endpoints &amp; Sample Frontends</h2>
-  <div class="endpoint-grid">
-    <a class="endpoint-card c1" href="sme_revenue_regressor.html">
-      <span class="tag">Regression</span>
-      <h3>SME Revenue Predictor</h3>
-      <p>Predicts monthly revenue (KES) for an SME.</p>
-      <p><code>/api/v1/models/sme-revenue-regressor/predictions</code></p>
-    </a>
-    <a class="endpoint-card c2" href="sme_credit_risk_classifier.html">
-      <span class="tag">Classification</span>
-      <h3>Credit Risk Classifier</h3>
-      <p>Predicts an SME loan applicant's risk category.</p>
-      <p><code>/api/v1/models/sme-credit-risk-classifier/predictions</code></p>
-    </a>
-    <a class="endpoint-card c3" href="mall_customer_segmenter.html">
-      <span class="tag">Clustering</span>
-      <h3>Customer Segmenter</h3>
-      <p>Assigns a mall customer to one of five segments.</p>
-      <p><code>/api/v1/models/mall-customer-segmenter/predictions</code></p>
-    </a>
-    <a class="endpoint-card c4" href="ecommerce_recommender.html">
-      <span class="tag">Association Rules</span>
-      <h3>Cart Recommender</h3>
-      <p>Recommends products for a shopping cart.</p>
-      <p><code>/api/v1/models/ecommerce-recommender/predictions</code></p>
-    </a>
-  </div>
-</main>
+let current = "rent";
+const form = document.getElementById("form");
+const result = document.getElementById("result");
 
-<footer>Open any card above directly in your browser -- no web server required. Remember to start <code>api.py</code> first.</footer>
+function showResult(text, ok) {
+  result.className = ok ? "ok" : "err";
+  result.textContent = text;
+}
 
+function render() {
+  const model = MODELS[current];
+  result.className = "";
+  document.querySelectorAll("#tabs button").forEach(b =>
+    b.classList.toggle("active", b.dataset.key === current));
+  form.innerHTML = model.fields.map(f => {
+    const hint = f.optional ? ' <span class="hint">(leave empty if none)</span>' : "";
+    const input = f.type === "select"
+      ? '<select name="' + f.name + '">' +
+        f.options.map(o => '<option>' + o + '</option>').join("") + "</select>"
+      : '<input name="' + f.name + '" type="' + f.type + '" step="any" value="' + (f.value ?? "") + '">';
+    return "<label>" + f.label + hint + input + "</label>";
+  }).join("") + '<button class="go" type="submit">Predict</button>';
+}
+
+document.getElementById("tabs").innerHTML = Object.entries(MODELS)
+  .map(([key, m]) => '<button type="button" data-key="' + key + '">' + m.title + "</button>").join("");
+document.getElementById("tabs").addEventListener("click", e => {
+  if (e.target.dataset.key) { current = e.target.dataset.key; render(); }
+});
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const model = MODELS[current];
+  const payload = {};
+  const missing = [];
+  for (const f of model.fields) {
+    const raw = form.elements[f.name].value.trim();
+    if (raw === "") {
+      if (f.optional) { payload[f.name] = null; continue; }
+      missing.push(f.label);
+      continue;
+    }
+    if (f.type === "number") {
+      if (Number.isNaN(Number(raw))) { missing.push(f.label + " (must be a number)"); continue; }
+      payload[f.name] = Number(raw);
+    } else if (f.name === "cart") {
+      payload.cart = raw.split(",").map(s => s.trim()).filter(Boolean);
+    } else {
+      payload[f.name] = raw;
+    }
+  }
+  if (missing.length) {
+    showResult("Please fix these inputs:\n- " + missing.join("\n- "), false);
+    return;
+  }
+  showResult("Working...", true);
+  try {
+    const response = await fetch(API_BASE + model.url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      const detail = data.missing_fields ? "\nMissing: " + data.missing_fields.join(", ") : "";
+      showResult("The API rejected the request: " + (data.error || response.status) + detail, false);
+    } else {
+      showResult(model.show(data), true);
+    }
+  } catch (err) {
+    showResult("Could not reach the API. Is the server running?", false);
+  }
+});
+
+render();
+</script>
 </body>
 </html>
