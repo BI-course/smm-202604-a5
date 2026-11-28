@@ -33,7 +33,7 @@
 // Direct-to-Flask testing (file:// or Live Server) needs the full address.
 // Through Nginx (https://localhost/) a relative path works and needs no CORS.
 const API_BASE = (location.protocol === "file:" || ["5500", "63342"].includes(location.port))
-  ? "http://127.0.0.1:5000" : "";
+  ? "http://127.0.0.1:5001" : "";
 // To use the Render API instead, set: const API_BASE = "https://YOUR-SERVICE.onrender.com";
 
 const num = (name, label, value, optional = false) => ({ name, label, type: "number", value, optional });
