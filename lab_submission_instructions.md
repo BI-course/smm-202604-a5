@@ -6,7 +6,7 @@
 
 **Member 1:**
 
-| **Details**                                                                                                                           | **Comment** |
+| **Details**                                                                                                                           | **Comment** |    
 |:--------------------------------------------------------------------------------------------------------------------------------------|:------------|
 | **Student ID**                                                                                                                        | 169384      |
 | **Name**                                                                                                                              | Bradley Lusalenge            |
@@ -32,9 +32,9 @@
 
 | **Details**                                                                                                                           | **Comment** |
 |:--------------------------------------------------------------------------------------------------------------------------------------|:------------|
-| **Student ID**                                                                                                                        |             |
-| **Name**                                                                                                                              |             |
-| **What part of the lab did you personally<br/>contribute to (provide a link to the<br/>branch(es)), and what did you learn from it?** |             |
+| **Student ID**168046                                                                                                                        |             |
+| **Name**       George Karanja                                                                                                                       |             |
+| frontend/index.html that calls all four model endpoints, with error handling for missing input and an unreachable API. Branch: https://github.com/BI-course/smm-202604-a5/tree/role4-webpage. I learned <your own words: how fetch sends JSON to the API, why CORS matters, and how to validate inputs in the browser |             |
 
 **Member 5:**
 
@@ -62,7 +62,7 @@ At minimum, the video must show, in one continuous walkthrough:
 
 Note that you are required to submit the link to the video and NOT the video itself. The video should NOT be uploaded to your repository—that would be a misuse of GitHub.
 
-**Link to the video:**
+**file:///C:/Users/gikum/Videos/Recording%202026-11-28%20222632.mp4:**
 
 ## Public URLs
 
